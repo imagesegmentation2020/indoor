@@ -433,6 +433,8 @@ At the end of all of the project, all of the experiments and the qualitative res
 
 # References
 [1]: NYU depth V2 dataset. https://cs.nyu.edu/~silberman/datasets/nyu_depth_v2.html
+
 [2]: Olaf Ronneberger, Philipp Fischer, Thomas Brox. "U-Net: Convolutional Networks for Biomedical Image Segmentation". CVPR, 2015. https://arxiv.org/abs/1505.04597
+
 [3]: How U-net works?. https://developers.arcgis.com/python/guide/how-unet-works/
 
