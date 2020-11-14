@@ -137,7 +137,7 @@ One of the problems of the Cross Entropy loss is the class imbalance of the data
 To reduce this effect, it is possible to use a new loss called “weighted loss” that consists of considering more relevant pixels that appear less. This relevance should have an inverse proportion with the number of pixels. For this reason it is necessary to analyze the number of pixels of each class in the training dataset:
 ![picture](https://drive.google.com/uc?export=view&id=1iTEIs-XGHr8Q9GBRoLIeO1SOS140j3dI)
 To calculate the weights that should be used in the weighted loss, the inversal of the number of  pixels has been calculated. These are the weights for our train dataset.
-![picture](https://drive.google.com/uc?export=view&id=1SQWIodxvjCX_4rQY1TPeY_3Pf4vCY9vs)
+![picture](https://drive.google.com/uc?export=view&id=1LWw1xp_9XEjxtrJZZp4218WtEIHWGf7u)
 With this loss ideally it is possible to increase the mean intersection over union, but as it is explained on the experiments, it won’t improve them because the weights of the training are not the weights that maximizes the results of the validation dataset. One of the reasons is because of the size of the dataset, which is not so big.
 Each weight is calculated as:
 ![picture](https://drive.google.com/uc?export=view&id=1JK0b6PjAI8QdYtYmhnvGMenJrF-Aj8Jy)
