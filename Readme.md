@@ -133,16 +133,21 @@ Mathematically is calculated using the following formule:
 ![picture](https://drive.google.com/uc?export=view&id=1eoYFOB9lTU13E00XjzdtG4DfeLRB4JLI)
 
 Due to the pixels that are not labeled in the target image can’t be predicted, they are not considered in this formula.
+
 One of the problems of the Cross Entropy loss is the class imbalance of the dataset, because it learns better classes that appear more than classes that appear less.
+
 To reduce this effect, it is possible to use a new loss called “weighted loss” that consists of considering more relevant pixels that appear less. This relevance should have an inverse proportion with the number of pixels. For this reason it is necessary to analyze the number of pixels of each class in the training dataset:
 ![picture](https://drive.google.com/uc?export=view&id=1iTEIs-XGHr8Q9GBRoLIeO1SOS140j3dI)
 To calculate the weights that should be used in the weighted loss, the inversal of the number of  pixels has been calculated. These are the weights for our train dataset.
 ![picture](https://drive.google.com/uc?export=view&id=1LWw1xp_9XEjxtrJZZp4218WtEIHWGf7u)
 With this loss ideally it is possible to increase the mean intersection over union, but as it is explained on the experiments, it won’t improve them because the weights of the training are not the weights that maximizes the results of the validation dataset. One of the reasons is because of the size of the dataset, which is not so big.
 Each weight is calculated as:
+
 ![picture](https://drive.google.com/uc?export=view&id=1JK0b6PjAI8QdYtYmhnvGMenJrF-Aj8Jy)
 Where 13 is the number of classses
+
 ![picture](https://drive.google.com/uc?export=view&id=11-aVaFoS3Med92m80ezNQYNvFKbk76uq)
+
 ![picture](https://drive.google.com/uc?export=view&id=1m1l_-frWn0MJzdcDO2Et_1ihFYIeH8rs) is the number of pixels of class 'i'
 
 These weights are used by the weighted loss to multiply by the training gradient. There are normalized by 13 to maintain the scale of the original Cross Entropy.
@@ -161,42 +166,61 @@ The procedure to calculate the metrics in every epoch are the following one:
      - Mean intersection over union is calculated averaging the intersection over union per class of every epoch.
 
 **Pixel Accuracy per class**
+
 Consist on evaluating for each class the percentage of pixels that are well labeled.
 The pixel accuracy per class and per batch is calculated as:
+
 ![picture](https://drive.google.com/uc?export=view&id=14JpxsBSdwwqoP9z_s9b3KTs2adKjLKsH)
+
 ![picture](https://drive.google.com/uc?export=view&id=1nA9hiG9-ma70kbsLk07dX03nWjs2ZcCx) is the pixel accuracy on batch 'b' of class 'i' 
 ![picture](https://drive.google.com/uc?export=view&id=18YrD3zVY6DzkpUj9H5RoDNxFl0JB-nqC) is the number of pixels of class 'i' of the batch 'b' well labeled
+
 ![picture](https://drive.google.com/uc?export=view&id=1oesgMzZ9gae9g4zhHHqvRu-PEfy2PSVr) is the number of pixels of class 'i' on batch 'b'
 
 The pixel accuracy per class is calculated using the following formula:
+
 ![picture](https://drive.google.com/uc?export=view&id=1g1rkhg0fMYJFziqnxWn39AKYOdlNY4hU)
+
 ![picture](https://drive.google.com/uc?export=view&id=1aZC_1q8c2ULYgZDBRp5HlKtIoaTHjGNf) is the pixel accuracy of class 'i'
+
 ![picture](https://drive.google.com/uc?export=view&id=10_ZOPMb2TwRMRxmjdXPRkxAzYH3AC69y) is the number of batch that contains the class 'i'
 
-
 **Mean pixel accuracy**
+
 The mean pixel accuracy, as his name defines, compute the mean of the pixel accuracy of the classes calculated in the previous paragraph.
 The formula used to calculate them is the next one:
 ![picture](https://drive.google.com/uc?export=view&id=1cE6SOywr7bqTOtclKxFXAd9gV0MFWxft)
 
 **Intersection over union per class**
+
 The intersection over union per class is calculated as the relation between the pixels well labeled of the class divided by the number of pixels predicted as the class and the number of pixels of the class that are not predicted.
 
 Graphically is calculated as:
+
 ![picture](https://drive.google.com/uc?export=view&id=12A2zeNEumA0EZ7FQJcaAV-TMrg-BzJb_)
+
 The intersection over union per class and per batch is calculated as:
+
 ![picture](https://drive.google.com/uc?export=view&id=1Ro_pi5naGR4R6yhMtTHop-M4OwDSHuUG)
-![picture](https://drive.google.com/uc?export=view&id=1VTWaNb640zxlVlAbHWZ8A_as4B81DnZz) is the intersection over union on batch 'b' of class 'i'
-![picture](https://drive.google.com/uc?export=view&id=18YrD3zVY6DzkpUj9H5RoDNxFl0JB-nqC) is the number of pixels of class 'i' of the batch 'b' well labeled
-![picture](https://drive.google.com/uc?export=view&id=1MoQn3_L13aN7Rptob_YG7L6qOyzPwUpG) is the number of pixels of class 'i' of the batch 'b' labeled as class 'i' but pertaining to other class
-![picture](https://drive.google.com/uc?export=view&id=1UFmmL_s4GcNI4FxiekPhOuCk-L-Dxa1s) is the number of pixels of class 'i' of the batch 'b' labeled as other class but pertaining to class 'i'
+
+![picture](https://drive.google.com/uc?export=view&id=1VTWaNb640zxlVlAbHWZ8A_as4B81DnZz) is the intersection over union on batch 'b' of class 'i'.
+
+![picture](https://drive.google.com/uc?export=view&id=18YrD3zVY6DzkpUj9H5RoDNxFl0JB-nqC) is the number of pixels of class 'i' of the batch 'b' well labeled.
+
+![picture](https://drive.google.com/uc?export=view&id=1MoQn3_L13aN7Rptob_YG7L6qOyzPwUpG) is the number of pixels of class 'i' of the batch 'b' labeled as class 'i' but pertaining to other class.
+
+![picture](https://drive.google.com/uc?export=view&id=1UFmmL_s4GcNI4FxiekPhOuCk-L-Dxa1s) is the number of pixels of class 'i' of the batch 'b' labeled as other class but pertaining to class 'i'.
 
 The pixel accuracy per class is calculated using the following formula:
+
 ![picture](https://drive.google.com/uc?export=view&id=1oluhj4nL2hk_kdz1Ny0FO2ibIsV8XqAh)
-![picture](https://drive.google.com/uc?export=view&id=1ORS7CoEE6G9LFVXz5jyFOEJ1OFWMv3uh) is the intersection over union of class 'i'
+
+![picture](https://drive.google.com/uc?export=view&id=1ORS7CoEE6G9LFVXz5jyFOEJ1OFWMv3uh) is the intersection over union of class 'i'.
+
 ![picture](https://drive.google.com/uc?export=view&id=10_ZOPMb2TwRMRxmjdXPRkxAzYH3AC69y) is the number of batch that contains the class 'i'
 
 **Mean intersection over union**
+
 The mean intersection over union, compute the mean of the intersection over union of the classes calculated in the previous paragraph.
 
 This metric helps to reduce the effect of the class imbalance, for the following reasons:
