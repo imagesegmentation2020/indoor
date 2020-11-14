@@ -107,6 +107,7 @@ For the previous reason, and also as the number of filters can be parallelized u
 It is possible to define the U-net as a convolutional Encoder-Decoder architecture because it is made by an encoder, a decoder and a Neckbottle.
 
 **Encoder**
+
 The encoder part has the goal to obtain information about the input image. It is made by four convolutional blocks and four maxpooling steps.
 Every Convolutional block is constructed by two blocks of Conv2D, BatchNormalization and ReLU as we can see on the following image:
 
@@ -120,10 +121,12 @@ The different elements of the Conv2D has the following goals:
 The maxpooling select the highest value of every 2x2 cell at the end of every convolutional block. The goal of maxpooling is to retain only the important features from each region and throw away non relevant information.
 
 **Bottleneck**
+
 The bottleneck block has the goal to force the model to learn a compression of the input data. The idea is that this model only learns relevant information to try to reconstruct the image.
 The bottleneck is made by a convolutional block. It can also be used to represent the inputs with reduced dimensionality, because it contains all the information of the input image.
 
 **Decoder**
+
 The goal of the decoder is to predict the labels of the input image, using the information obtained by the Encoder and Bottleneck part.
 The decoder is made by four unpooling blocks, four convolutional blocks, an optional dropout layer and finally a 2Dconvolution.
 
@@ -148,13 +151,18 @@ Due to the pixels that are not labeled in the target image can’t be predicted,
 One of the problems of the Cross Entropy loss is the class imbalance of the dataset, because it learns better classes that appear more than classes that appear less.
 
 To reduce this effect, it is possible to use a new loss called “weighted loss” that consists of considering more relevant pixels that appear less. This relevance should have an inverse proportion with the number of pixels. For this reason it is necessary to analyze the number of pixels of each class in the training dataset:
+
 ![picture](https://drive.google.com/uc?export=view&id=1iTEIs-XGHr8Q9GBRoLIeO1SOS140j3dI)
+
 To calculate the weights that should be used in the weighted loss, the inversal of the number of  pixels has been calculated. These are the weights for our train dataset.
+
 ![picture](https://drive.google.com/uc?export=view&id=1LWw1xp_9XEjxtrJZZp4218WtEIHWGf7u)
+
 With this loss ideally it is possible to increase the mean intersection over union, but as it is explained on the experiments, it won’t improve them because the weights of the training are not the weights that maximizes the results of the validation dataset. One of the reasons is because of the size of the dataset, which is not so big.
 Each weight is calculated as:
 
 ![picture](https://drive.google.com/uc?export=view&id=1JK0b6PjAI8QdYtYmhnvGMenJrF-Aj8Jy)
+
 Where 13 is the number of classses
 
 ![picture](https://drive.google.com/uc?export=view&id=11-aVaFoS3Med92m80ezNQYNvFKbk76uq)
