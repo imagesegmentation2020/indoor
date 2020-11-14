@@ -140,9 +140,10 @@ To calculate the weights that should be used in the weighted loss, the inversal 
 ![picture](https://drive.google.com/uc?export=view&id=1SQWIodxvjCX_4rQY1TPeY_3Pf4vCY9vs)
 With this loss ideally it is possible to increase the mean intersection over union, but as it is explained on the experiments, it won’t improve them because the weights of the training are not the weights that maximizes the results of the validation dataset. One of the reasons is because of the size of the dataset, which is not so big.
 Each weight is calculated as:
-$$W_{k} = {13*N_k\over \sum_{i=1}^{M} N_i}$$
-Where 13 is the number of classses, $$N_{i} = {1\over \ M_i}$$
-And $$M_{i}$$ is the number of pixels of class 'i'
+![picture](https://drive.google.com/uc?export=view&id=1JK0b6PjAI8QdYtYmhnvGMenJrF-Aj8Jy)
+Where 13 is the number of classses
+![picture](https://drive.google.com/uc?export=view&id=11-aVaFoS3Med92m80ezNQYNvFKbk76uq)
+![picture](https://drive.google.com/uc?export=view&id=1m1l_-frWn0MJzdcDO2Et_1ihFYIeH8rs) is the number of pixels of class 'i'
 
 These weights are used by the weighted loss to multiply by the training gradient. There are normalized by 13 to maintain the scale of the original Cross Entropy.
 
@@ -162,47 +163,38 @@ The procedure to calculate the metrics in every epoch are the following one:
 **Pixel Accuracy per class**
 Consist on evaluating for each class the percentage of pixels that are well labeled.
 The pixel accuracy per class and per batch is calculated as:
-
-$$Acc_{b_i}= {TP_{b_i}\over \ N_{b_i}}$$
-
-$$Acc_{b_i}$$ is the pixel accuracy on batch 'b' of class 'i' 
-$$TP_{b_i}$$ is the number of pixels of class 'i' of the batch 'b' well labeled
-$$N_{b_i}$$ is the number of pixels of class 'i' on batch 'b'
+![picture](https://drive.google.com/uc?export=view&id=14JpxsBSdwwqoP9z_s9b3KTs2adKjLKsH)
+![picture](https://drive.google.com/uc?export=view&id=1nA9hiG9-ma70kbsLk07dX03nWjs2ZcCx) is the pixel accuracy on batch 'b' of class 'i' 
+![picture](https://drive.google.com/uc?export=view&id=18YrD3zVY6DzkpUj9H5RoDNxFl0JB-nqC) is the number of pixels of class 'i' of the batch 'b' well labeled
+![picture](https://drive.google.com/uc?export=view&id=1oesgMzZ9gae9g4zhHHqvRu-PEfy2PSVr) is the number of pixels of class 'i' on batch 'b'
 
 The pixel accuracy per class is calculated using the following formula:
+![picture](https://drive.google.com/uc?export=view&id=1g1rkhg0fMYJFziqnxWn39AKYOdlNY4hU)
+![picture](https://drive.google.com/uc?export=view&id=1aZC_1q8c2ULYgZDBRp5HlKtIoaTHjGNf) is the pixel accuracy of class 'i'
+![picture](https://drive.google.com/uc?export=view&id=10_ZOPMb2TwRMRxmjdXPRkxAzYH3AC69y) is the number of batch that contains the class 'i'
 
-$$Acc_{i}= {\sum_{b=1}^{k_i} Acc_{b_i}\over \ K_i}$$
-
-$$Acc_{i}$$ is the pixel accuracy of class 'i'
-$$K_i$$ is the number of batch that contains the class 'i'
 
 **Mean pixel accuracy**
 The mean pixel accuracy, as his name defines, compute the mean of the pixel accuracy of the classes calculated in the previous paragraph.
 The formula used to calculate them is the next one:
-
-$$m_{acc} = {\sum_{i=1}^{13} Acc_i\over 13}$$
+![picture](https://drive.google.com/uc?export=view&id=1cE6SOywr7bqTOtclKxFXAd9gV0MFWxft)
 
 **Intersection over union per class**
-
 The intersection over union per class is calculated as the relation between the pixels well labeled of the class divided by the number of pixels predicted as the class and the number of pixels of the class that are not predicted.
 
 Graphically is calculated as:
 ![picture](https://drive.google.com/uc?export=view&id=12A2zeNEumA0EZ7FQJcaAV-TMrg-BzJb_)
 The intersection over union per class and per batch is calculated as:
-
-$$IOU_{b_i}= {TP_{b_i}\over \ TP_{b_i} + FP_{b_i} + FN_{b_i}}$$
-
-$$IOU_{b_i}$$ is the intersection over union on batch 'b' of class 'i' 
-$$TP_{b_i}$$ is the number of pixels of class 'i' of the batch 'b' well labeled
-$$FP_{b_i}$$ is the number of pixels of class 'i' of the batch 'b' labeled as class 'i' but pertaining to other class
-$$FN_{b_i}$$ is the number of pixels of class 'i' of the batch 'b' labeled as other class but pertaining to class 'i'
+![picture](https://drive.google.com/uc?export=view&id=1Ro_pi5naGR4R6yhMtTHop-M4OwDSHuUG)
+![picture](https://drive.google.com/uc?export=view&id=1VTWaNb640zxlVlAbHWZ8A_as4B81DnZz) is the intersection over union on batch 'b' of class 'i'
+![picture](https://drive.google.com/uc?export=view&id=18YrD3zVY6DzkpUj9H5RoDNxFl0JB-nqC) is the number of pixels of class 'i' of the batch 'b' well labeled
+![picture](https://drive.google.com/uc?export=view&id=1MoQn3_L13aN7Rptob_YG7L6qOyzPwUpG) is the number of pixels of class 'i' of the batch 'b' labeled as class 'i' but pertaining to other class
+![picture](https://drive.google.com/uc?export=view&id=1UFmmL_s4GcNI4FxiekPhOuCk-L-Dxa1s) is the number of pixels of class 'i' of the batch 'b' labeled as other class but pertaining to class 'i'
 
 The pixel accuracy per class is calculated using the following formula:
-
-$$IOU_{i}= {\sum_{b=1}^{k_i} IOU_{b_i}\over \ K_i}$$
-
-$$IOU_{i}$$ is the intersection over union of class 'i'
-$$K_i$$ is the number of batch that contains the class 'i'
+![picture](https://drive.google.com/uc?export=view&id=1oluhj4nL2hk_kdz1Ny0FO2ibIsV8XqAh)
+![picture](https://drive.google.com/uc?export=view&id=1ORS7CoEE6G9LFVXz5jyFOEJ1OFWMv3uh) is the intersection over union of class 'i'
+![picture](https://drive.google.com/uc?export=view&id=10_ZOPMb2TwRMRxmjdXPRkxAzYH3AC69y) is the number of batch that contains the class 'i'
 
 **Mean intersection over union**
 The mean intersection over union, compute the mean of the intersection over union of the classes calculated in the previous paragraph.
@@ -212,10 +204,9 @@ This metric helps to reduce the effect of the class imbalance, for the following
   - In mean intersection over union, the classes with less apparitions have the same influence in the metric than classes with higher apparitions, due to the nature of the calculation of this metric. This makes it a good metric to evaluate unbalanced datasets, as is the case of the dataset in this project.
 
 The formula used to calculate them is the next one:
+![picture](https://drive.google.com/uc?export=view&id=1Gze9clV00RvmGlqxKNuuyt1Vnow3oSPo)
 
-$$m_{acc} = {\sum_{i=1}^{13} IOU_i\over 13}$$
-
-# Experiments & Conclusions
+# Experiments
 
 We trained the model several times with different optimizers and hyperparameters, aiming to get the best Mean IOU. Which is the metric that best defines the performance of the results, as it is explained above. 
 
@@ -278,11 +269,11 @@ The  regularization does not reduce the overfitting effect but improves slightly
 The third experiment consists of evaluating a train between the best optimizer in the previous step (ADAM with Learning rate 5e-4 and weight decay 1e-4) with a SGD with momentum with similar conditions.
 
   - ADAM
-    - ![#f03c15](https://via.placeholder.com/15/C2185B/000000?text=+) Train
-    - ![#f03c15](https://via.placeholder.com/15/00AAE4/000000?text=+) Validation 
+    - ![#f03c15](https://via.placeholder.com/15/00AAE4/000000?text=+) Train
+    - ![#f03c15](https://via.placeholder.com/15/C2185B/000000?text=+) Validation 
   - SGD with momentum
-    - ![#f03c15](https://via.placeholder.com/15/3B83BD/000000?text=+) Train
-    - ![#f03c15](https://via.placeholder.com/15/ff8000/000000?text=+) Validation 
+    - ![#f03c15](https://via.placeholder.com/15/ff8000/000000?text=+) Train
+    - ![#f03c15](https://via.placeholder.com/15/3B83BD/000000?text=+) Validation 
 
 Before the experiment theoretically we expect SGD with momentum has similar properties than ADAM but trains slower.
 
@@ -392,16 +383,16 @@ Using colorJitter for data augmentation, stabilizes the loss in the validation s
 In the following experiment we are going to compare the results using horizontal flip or without using them.
 
   - Without Horizontal Flip
-    - ![#f03c15](https://via.placeholder.com/15/B22222/000000?text=+) Train
-    - ![#f03c15](https://via.placeholder.com/15/00AAE4/000000?text=+) Validation 
-  - With Horizontal Flip
     - ![#f03c15](https://via.placeholder.com/15/CDCDCD/000000?text=+) Train
     - ![#f03c15](https://via.placeholder.com/15/ff8000/000000?text=+) Validation 
+  - With Horizontal Flip
+    - ![#f03c15](https://via.placeholder.com/15/B22222/000000?text=+) Train
+    - ![#f03c15](https://via.placeholder.com/15/0E76A8/000000?text=+) Validation 
 
 Interpretative to humans, we can detect the same objects if we have an image or if we have them with an HorizontalFlip.
 For this reason it is reasonable that we can do a kind of data augmentation doing horizontal flip on training to try to decrease the overfitting.
 
-![picture](https://drive.google.com/uc?export=view&id=13kMIqCJE26sER68_d_Luaa7upE_jsmwf)![picture](https://drive.google.com/uc?export=view&id=1534P-EReYfgKIh0JOtsanYjc2_hE0p73)![picture](https://drive.google.com/uc?export=view&id=1SXGBn-JOe3DioeBJtVzS10azw1G7sHoV)
+![picture](https://drive.google.com/uc?export=view&id=1Vene1h7d6wczrqmYiPPVXS2c0SNWgfxs)![picture](https://drive.google.com/uc?export=view&id=1Qhu0siqj-fCaTmV4jE-lDTrVxGHVWohY)![picture](https://drive.google.com/uc?export=view&id=1GTsA-_OQ1PWmm6RflYuwHGIXdsBL2p29)
 
 |                | Without Horizontal Flip | With Horizontal Flip |
 |----------------|-------------------------|----------------------|
@@ -410,4 +401,38 @@ For this reason it is reasonable that we can do a kind of data augmentation doin
 | Mean Pixel Acc | 68.58%                  | 69.69%               |
 
 As we expected, the results on validation are better using Horizontal Flip and also the loss and the metrics are stabilized.
+
+# Conclusions
+
+After select the best model as the best mean intersection over union of all experiments, we can see the following results in testing:
+
+  - Mean IOU: 34.09%
+  - Mean Pixel Accuracy: 62.76%
+
+![picture](https://drive.google.com/uc?export=view&id=1XFrcMIYJ9bnqiAEWan19qpDJxQL4nUMb)
+
+Example of qualitative results:
+  - Input image
+
+![picture](https://drive.google.com/uc?export=view&id=1hIN0zWg5C5sVr2z7F3A_8C9GVCBwMiog)
+  - Ground through
+  
+![picture](https://drive.google.com/uc?export=view&id=1bZcuA8TUwdvWfYnVUd_AK2zuoE1H7fL1)
+  - Prediction
+
+![picture](https://drive.google.com/uc?export=view&id=1GC_3gnkXJDyxWwMSBfL6eNsSup84JGub)
+
+At the end of all of the project, all of the experiments and the qualitative results, we learn the following performances about deep learning:
+  - Is posible train a net without invest money on GPU, thanks to Google Colab.
+  - Data is all, having good results depends on the amount of data and its treatment.
+  - Most of the time to program a network is to process the data and wait for training results.
+  - Know metrics goals before start the net helps to modelate the parameters of the network.
+  - Dropout: better results but less improves than we expect.
+  - Intuitively the model learns better classes that are easy to differentiate for humans .
+  - Human logic helps to select transformations to our system.
+
+# References
+[1]: NYU depth V2 dataset. https://cs.nyu.edu/~silberman/datasets/nyu_depth_v2.html
+[2]: Olaf Ronneberger, Philipp Fischer, Thomas Brox. "U-Net: Convolutional Networks for Biomedical Image Segmentation". CVPR, 2015. https://arxiv.org/abs/1505.04597
+[3]: How U-net works?. https://developers.arcgis.com/python/guide/how-unet-works/
 
