@@ -6,10 +6,13 @@
 
 # Motivation
 
-We decided to pursue an indoor image segmentation task, which is one of the key problems in the field of computer vision. 
+We decided to pursue an indoor image segmentation task, which is one of the key problems in the field of computer vision.
+
 One of the main reasons we chose this topic is because we are interested in object detection, which is not an easy task. 
-The architectures normally used in this field also caught our attention. 
-We were excited to learn the most about deep learning, its implementation, and observe how far our creativity can go to improve the performance of our model. 
+The architectures normally used in this field also caught our attention.
+
+We were excited to learn the most about deep learning, its implementation, and observe how far our creativity can go to improve the performance of our model.
+
 Besides learning about Deep Learning, we seeked to learn the most about working as a team on a project of this type.
 
 # Proposal
@@ -37,7 +40,9 @@ The NYU depth V2 dataset contains a wide variety of indoor scene images captured
 ![picture](https://drive.google.com/uc?export=view&id=1I5-XL0mhVsRo7F15uYHXnj2H9o6V-5Nq)
 
 The depth images have not been used in this project. The raw images with its corresponding labelled images, which contain the ground truth of the object class for every pixel in the image, have been used to train, validate and test the network.
+
 The size of raw images, which were captured by an RGB camera, is 640 x 480 x 3 channels. The size of the labelled images is 640 x 480 x 1 channel. Containing only the values of the object class for each one of the pixels.
+
 This dataset had already defined the splitting of the dataset in training, validation and test sets of images. The aim of that is to be able to compare the results and the performance of the network with other people who have used this dataset for the image segmentation task as well.
 
 The splitting of the dataset is shown at the following table:
@@ -51,11 +56,13 @@ The splitting of the dataset is shown at the following table:
 ### Interpretation of the dataset
 
 By default, the objects labelled in the NYU Depth V2 dataset are classified in 894 different classes. To reduce the complexity of the project and achieve a better understanding of the dataset, a class reduction has been applied, grouping the 894 different classes in 13 classes, that contained more generalizing information of the objects. For example, the objects “shelf”, “wardrobe” and “desk” have been grouped into the class “furniture”.
+
 In the following image we can observe the apparition of the different classes in the dataset, for train, validation, and test sets.
 
 ![picture](https://drive.google.com/uc?export=view&id=1nYneXdLBP60AiwfR3GGYTtcQqzvlRTsQ)
 
-The labelled images in the dataset contain discrete values between 0 and 13, one for each object class, where the value “0” is assigned to those pixels which are not assigned to any object, so they have no label. 
+The labelled images in the dataset contain discrete values between 0 and 13, one for each object class, where the value “0” is assigned to those pixels which are not assigned to any object, so they have no label.
+
 We have adapted the labelled images values so they go between 0 and 12, and we also assigned to the “no label” pixels a value of 255 instead of 0.
  
 Colorization of the labelled images has also been implemented in order to visualize the classes by looking the labelled image:
@@ -64,10 +71,14 @@ Colorization of the labelled images has also been implemented in order to visual
 
 ### Transformations applied to the dataset
 
-A custom dataset class of the loading images and targets was created, in order to automatically resize them to fit them in the network, and also apply some data augmentation techniques. 
+A custom dataset class of the loading images and targets was created, in order to automatically resize them to fit them in the network, and also apply some data augmentation techniques.
+
 Raw images have been resized to 300x300 pixels. Afterwards, we applied random crop to the train images and CenterCrop to validation and test images, so all the dataset have been transformed to 256x256 pixels.
-This dataset class also applies some transformations like random cropping and center cropping used for data augmentation, controlling that the random is applied at same time for both the image and the target. 
-For data augmentation, we added some noise to the data and modified contrast, saturation and brightness, and also applied horizontal flip to the images, to try to improve the performance of the network and its generalization. 
+
+This dataset class also applies some transformations like random cropping and center cropping used for data augmentation, controlling that the random is applied at same time for both the image and the target.
+
+For data augmentation, we added some noise to the data and modified contrast, saturation and brightness, and also applied horizontal flip to the images, to try to improve the performance of the network and its generalization.
+
 The values of the RGB images and its labels have been normalized to facilitate the training of the network, so all the values are between 0 and 1.
 
 # Architecture
