@@ -1,3 +1,20 @@
+# Repository structure
+
+The repository has the following structure:
+  - Folder Scripts:
+      - datas: class to read images from a CSV file
+      - metrics: methods to calculate our metrics and show results.
+      - transformations: classes and methods to be available the images and labels to be transformed
+      - models: U-net model
+      - utils: Other methods for miscellaneous goals, as save the current state of the model, select the colors to show labels.
+  - Images: Zip file with all images and labels.
+  - Model training: Google Colab to train the network.
+  - Model testing: Google colab to load the model and test them.
+  - Weights calculation: Google Colab to calculate the weights for the CrossEntropy weighted loss.
+  - Tensorboard Unet Experiments: Google Colab to read results of previous executions.
+  - Data preprocessing: Google colab to read the dataset and generate images and labels for training, test and validation
+
+
 # About
 
   - Date: 17/11/2020
@@ -8,7 +25,8 @@
 
 We decided to pursue an indoor image segmentation task, which is one of the key problems in the field of computer vision.
 
-One of the main reasons we chose this topic is because we are interested in object detection, which is not an easy task. 
+One of the main reasons we chose this topic is because we are interested in object detection and semantic segmentation, and after analyze the datasets available for free, we found a dataset available for semantic segmantation.
+
 The architectures normally used in this field also caught our attention.
 
 We were excited to learn the most about deep learning, its implementation, and observe how far our creativity can go to improve the performance of our model.
@@ -33,35 +51,45 @@ Besides learning about Deep Learning, we seeked to learn the most about working 
   - Improve the performance of the network by changing the hyperparameters.
   - Generate the report, presenting the results obtained with its conclusions. 
 
+# Computational resources
+
+In this project we used Google Colaboratory, which is a free platform where the users can write text and code, so it is executed and saved in the cloud. We made a Google account to store the results of the experiments.
+
+Google colaboratory assigns a random GPU when running, which it sometimes has different computing power. It is a Nvidia GPU, which specifications are described in the following image. There are also daily time limitations of execution of the GPU.
+
+![picture](https://drive.google.com/uc?export=view&id=1PI4PBjLLJdZvevrVy5wVl-ZJzpjSecIG)
+
+
 # Dataset
 
-The NYU depth V2 dataset contains a wide variety of indoor scene images captured by both the RGB and Depth cameras. It features 1449 RGB images, aligned with its label images and Depth images:
+The NYU depth V2 dataset [1] contains a wide variety of indoor scene images captured by both the RGB and Depth cameras. It features 1449 RGB images, aligned with its label images and Depth images:
 
 ![picture](https://drive.google.com/uc?export=view&id=1I5-XL0mhVsRo7F15uYHXnj2H9o6V-5Nq)
+
 
 The depth images have not been used in this project. The raw images with its corresponding labelled images, which contain the ground truth of the object class for every pixel in the image, have been used to train, validate and test the network.
 
 The size of raw images, which were captured by an RGB camera, is 640 x 480 x 3 channels. The size of the labelled images is 640 x 480 x 1 channel. Containing only the values of the object class for each one of the pixels.
 
-This dataset had already defined the splitting of the dataset in training, validation and test sets of images. The aim of that is to be able to compare the results and the performance of the network with other people who have used this dataset for the image segmentation task as well.
+This dataset had already defined the splitting of the dataset in training and test sets of images. The training and validation splits are generated randomly with proportionality 80% training and 20% validation using the given training split. The aim of that is to be able to compare the results and the performance of the network with other people who have used this dataset for the image segmentation task as well.
 
 The splitting of the dataset is shown at the following table:
 
 |            | Number of images | Percentage |
 |------------|------------------|------------|
 | Train      | 636              | 44%        |
-| Validation | 654              | 45%        |
-| Test       | 159              | 11%        |
+| Test       | 654              | 45%        |
+| Validation | 159              | 11%        |
 
 ### Interpretation of the dataset
 
-By default, the objects labelled in the NYU Depth V2 dataset are classified in 894 different classes. To reduce the complexity of the project and achieve a better understanding of the dataset, a class reduction has been applied, grouping the 894 different classes in 13 classes, that contained more generalizing information of the objects. For example, the objects “shelf”, “wardrobe” and “desk” have been grouped into the class “furniture”.
+By default, the objects labelled in the NYU Depth V2 dataset are classified in 894 different classes. To reduce the complexity of the project and achieve a better understanding of the dataset, a class reduction has been applied, grouping the 894 different classes in 13 classes, that contained more generalizing information of the objects. To grouping the classes a relation to convert 894 to 40 classes and 40 classes to 13 is given by the dataset. For example, the objects “shelf”, “wardrobe” and “desk” have been grouped into the class “furniture”.
 
 In the following image we can observe the apparition of the different classes in the dataset, for train, validation, and test sets.
 
 ![picture](https://drive.google.com/uc?export=view&id=1nYneXdLBP60AiwfR3GGYTtcQqzvlRTsQ)
 
-The labelled images in the dataset contain discrete values between 0 and 13, one for each object class, where the value “0” is assigned to those pixels which are not assigned to any object, so they have no label.
+The labelled images in the dataset contain discrete values between 0 and 13, one for each object class, where the value “0” is assigned to those pixels which are not labeled.
 
 We have adapted the labelled images values so they go between 0 and 12, and we also assigned to the “no label” pixels a value of 255 instead of 0.
  
@@ -85,18 +113,11 @@ The values of the RGB images and its labels have been normalized to facilitate t
 
 The architecture selected for our task is the U-Net, one of the most popular networks for computer vision, and specially for segmentation tasks.
 
-This model was born in 2015 to solve image segmentation needs for biomedical applications. It consist on a encoder, a bottleneck and a decoder and would be detailed at the paragraph “Disclosing the U-net”
+This model was born in 2015 to solve image segmentation needs for biomedical applications [2]. It consist on a encoder, a bottleneck and a decoder and would be detailed at the paragraph “Disclosing the U-net”
 ![picture](https://drive.google.com/uc?export=view&id=1RdO40r0BoX8TBFL4K62stI4i14zOjg2s)
 
 Our model consists of using the U-Net to convert 256x256 RGB images to get a 256x256 pixels segmentation map of 13 categories. To accomplish that we follow the same structure, but adapt the steps of the original model to our needs. (Mainly modifying the convolutional part).
-![picture](https://drive.google.com/uc?export=view&id=1O0NkLmEf5ixltado1e1U_mUxz4nXrLlC)
-### Motivation of the architecture
-
-After analyse many architecture for semantic segmentation, the U-Net was selected for the following reasons:
-
-  - Efficient use of the GPU.
-  - Good performance in small datasets.
-  - Easy to implement for a student without previous experience in Deep Learning.
+![picture](https://drive.google.com/uc?export=view&id=1fwa_Iws6h0nkdpuRrIHK3Eal8EnmJ_b8)
 
 The main difference between U-net and other network architectures is that every pooling layer is mirrored by an up-sampling layer.
 The mirror permits to reduce the size of the image in the encoder part, reducing the number of parameters that should be calculated.
@@ -144,17 +165,22 @@ The loss function has the goal to measure how far the prediction of the network 
 The Cross Entropy is the simplest and most common loss function used in semantic segmentation. This loss examines each pixel individually, comparing the class prediction to our one-hot encoded target vector.
 
 Mathematically is calculated using the following formule:
-![picture](https://drive.google.com/uc?export=view&id=1eoYFOB9lTU13E00XjzdtG4DfeLRB4JLI)
+
+![picture](https://drive.google.com/uc?export=view&id=1Gebq9XjYP-vYP9KBvH0RFoWqEWADW1gC)
+![picture](https://drive.google.com/uc?export=view&id=1EeVWPRR6fHczZCpAy_02TKGSHcN5IX7P)  is the target vector.
+![picture](https://drive.google.com/uc?export=view&id=1eL1ESdVTn4o2K3JfDk-K_PaUefU-bg4r) is the softmax function calculated as:
+![picture](https://drive.google.com/uc?export=view&id=1Kyl4WvPQNOreGduZF9oPYziDTNsGMkyM)
+![picture](https://drive.google.com/uc?export=view&id=1nkSw43m9lmXOFA_ND4WEi5dzsyFladt-) is the CNN score of the class 'i'
 
 Due to the pixels that are not labeled in the target image can’t be predicted, they are not considered in this formula.
 
 One of the problems of the Cross Entropy loss is the class imbalance of the dataset, because it learns better classes that appear more than classes that appear less.
 
-To reduce this effect, it is possible to use a new loss called “weighted loss” that consists of considering more relevant pixels that appear less. This relevance should have an inverse proportion with the number of pixels. For this reason it is necessary to analyze the number of pixels of each class in the training dataset:
+To reduce this effect, it is possible use the "Weighted Cross Entropy" that consists of considering more relevant pixels that appear less. This relevance should have an inverse proportion with the number of pixels. For this reason it is necessary to analyze the number of pixels of each class in the training dataset:
 
 ![picture](https://drive.google.com/uc?export=view&id=1iTEIs-XGHr8Q9GBRoLIeO1SOS140j3dI)
 
-To calculate the weights that should be used in the weighted loss, the inversal of the number of  pixels has been calculated. These are the weights for our train dataset.
+To calculate the weights that should be used in the weighted loss we need to calculate the inverted frequency. These are the weights for our train dataset.
 
 ![picture](https://drive.google.com/uc?export=view&id=1LWw1xp_9XEjxtrJZZp4218WtEIHWGf7u)
 
@@ -169,7 +195,7 @@ Where 13 is the number of classses
 
 ![picture](https://drive.google.com/uc?export=view&id=1m1l_-frWn0MJzdcDO2Et_1ihFYIeH8rs) is the number of pixels of class 'i'
 
-These weights are used by the weighted loss to multiply by the training gradient. There are normalized by 13 to maintain the scale of the original Cross Entropy.
+These weights are used by the Cross Entropy loss to multiply the result by the correspondent factor.
 
 # Metrics
 
@@ -472,13 +498,11 @@ At the end of all of the project, all of the experiments and the qualitative res
   - Most of the time to program a network is to process the data and wait for training results.
   - Know metrics goals before start the net helps to modelate the parameters of the network.
   - Dropout: better results but less improves than we expect.
-  - Intuitively the model learns better classes that are easy to differentiate for humans .
+  - Intuitively the model learns better classes that are easy to differentiate for humans 
   - Human logic helps to select transformations to our system.
 
 # References
 [1]: NYU depth V2 dataset. https://cs.nyu.edu/~silberman/datasets/nyu_depth_v2.html
 
 [2]: Olaf Ronneberger, Philipp Fischer, Thomas Brox. "U-Net: Convolutional Networks for Biomedical Image Segmentation". CVPR, 2015. https://arxiv.org/abs/1505.04597
-
-[3]: How U-net works?. https://developers.arcgis.com/python/guide/how-unet-works/
 
