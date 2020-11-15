@@ -12,8 +12,8 @@ The repository has the following structure:
   - Model testing: Google colab to load the model and test them.
   - Weights calculation: Google Colab to calculate the weights for the CrossEntropy weighted loss.
   - Tensorboard Unet Experiments: Google Colab to read results of previous executions.
-  - Data preprocessing: Google colab to read the dataset and generate images and labels for training, test and validation
-
+  - Data preprocessing: Google colab to read the dataset and generate images and labels for training, test and validation.
+  - Model Deeplabv3-Resnet101: Training code adapt to use a pretrained model.
 
 # About
 
