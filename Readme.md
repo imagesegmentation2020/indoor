@@ -558,6 +558,7 @@ At the end of all of the project, all of the experiments and the qualitative res
 
 [28] U-Net and pixel accuracy results in class imbalance. https://towardsdatascience.com/image-segmentation-kaggle-experience-9a41cb8924f0
 
+[29] Accuracy Improvement of UNet Based on Dilated Convolution. https://iopscience.iop.org/article/10.1088/1742-6596/1345/5/052066
 
 
 
