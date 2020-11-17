@@ -474,8 +474,120 @@ For this reason it is reasonable that we can do a kind of data augmentation doin
 
 As we expected, the results on validation are better using Horizontal Flip and also the loss and the metrics are stabilized.
 
-**Experiment 8: DeeplabV3-RESNET101**
 
+
+
+
+# Reducing complexity of the model
+
+After analyse the results of the experiments, several hypotesis are presented to improve the model, reduce overfitting, and maximize Intersection over Union (Iou) and Pixel Accuracy(Acc).
+
+We conclude: 
+
+  - Reduce the number of features could improve the overfitting.
+  - A bigger size in bottleneck features could improve the metric results.
+  
+Our reserach was fructiferous and we obtain a paper Accuracy Improvement of UNet Based on Dilated Convolution from Shengyuan Piao and Jiaming Liu, from the University of Beijing, published at November, 2019. [3]
+
+We show here the modificated Unet model proposed : Deep Dilated Unet with a Paralel Dilated Convolution bottleneck module.
+ 
+<img src="Images/Figures/Paralel Dilated Convolutions.png" alt="Paralel Dilated Convolutions" />
+<img src="Images/Figures/Deep Dilated Unet.png" alt="Deep Dilated Unet" />
+
+As seen in this model, the number of shortcuts are reduced to 3. The module proposed as bottleneck consists in a 7 ditled convolutions.
+Each one of them works with features from size 32x32x512. This is 512 features with mapping size of 32x32. The dilations rate increases quadratically, from 1 to 32.
+
+To adapt this proposed Deep Dilated Unet, to our already implemented Unet working with our dataset, in addition qith the quadratic rate convolutions,
+we approach several prototypes. The problem we found is a trade off among skipconnections number, the number of convolutions in the bottleneck, and the number of channels and size of the features at the bottleneck. We start from RGB images at dataset from size 256x256x3. 
+
+
+**Experiment 8: Comparison between Deep Dilated Prototypes and Unet**
+
+Prototypes developed : 
+
+
+<img src="Images/Figures/UNET_SkipConnect_3_Features_256.png" alt="3 skip connections, 5 dilated convolutions from 1 to 16, and features size 32x32x256" /> 
+
+The prototype 1 (Deep Dilated Unet 1-16), has 3 skip connections, 5 dilated convolutions at the bottleneck which dilation rate is from 1 to 16, and features size 32x32x256.
+
+
+<img src="Images/Figures/UNET_SkipConnect_4_Features_512.png" alt="4 skip connections, 4 dilated convolutions from 1 to 8, and features size 16x16x512" />
+
+The prototype 2, (Deep Dilated Unet 1-8) has 4 skip connections, 4 dilated convolutions at the bottleneck which dilation rate is from 1 to 8, and features size 16x16x512.
+
+
+We train several models with the dataset and the hyperparmeters found by the Unet : Adam, Learning rate 5e-4, Weight Decay 5e-4, Dropout 0.2, HorizontalFlip. 
+
+
+- Deep Dilated Unet 1-16
+    - ![#f03c15](https://via.placeholder.com/15/B22222/000000?text=+) Train
+    - ![#f03c15](https://via.placeholder.com/15/00AAE4/000000?text=+) Validation
+ 
+- Deep Dilated Unet 1-8
+    - ![#f03c15](https://via.placeholder.com/15/C2185B/000000?text=+) Train
+    - ![#f03c15](https://via.placeholder.com/15/009C8C/000000?text=+) Validation 
+- Unet
+    - ![#f03c15](https://via.placeholder.com/15/ff8000/000000?text=+) Train
+    - ![#f03c15](https://via.placeholder.com/15/3B83BD/000000?text=+) Validation 
+
+
+<img src="Images/Figures/Prototype1-2_Loss.png" alt="Loss" /><img src="Images/Figures/Prototype1-2_mIoU.png" alt="mIou" /><img src="Images/Figures/Prototype1-2_mAcc.png" alt="mAcc" />
+
+We got surprising results:  Prototype 1 (Deep Dilated Unet 1-16), with 3 skip connections, got better results than Prototype 2 (Deep Dilated Unet 1-8) with the four skip cpnnections as our Unet model. But Unet model still has much more better results then the presented prototypes.
+
+We concluded that we should improve prototype 1 (Deep Dilated Unet 1-16), because 3 skip connections is best than 4. But the clue is to have, for one side features with mapping space 32x32 with 512 channels at the bottlenck, at in the other side complete the 7 dilated convolution structure somehow.
+
+Our research was fructiferous and we obtain a document with the final solution.
+At the webpage Bitcoin Insider: Smart Audit: Using AI in International Trade. [4] we found the model prototype that inspired us to our final solution.
+
+<img src="Images/Figures/Dilation rate UNet.png" alt="Deep Dilated Unet at Bitcoin Insider" />
+
+This model has 3 skip connections, 6 dilated convolutions at the bottleneck which dilation rate is from 1 to 6, increased lineally, and features size 32x32x512 at the bottlenck.
+
+The solution comes from two important changes
+
+  - At the first convolution of the Unet, instead to produce fature maps of 32 channels, it produces feature maps of 64 channels. This results in features size 32x32x512 at the bottlenceck 
+  - Dilations rate increases lineally instead of quadratically. This give us the possibility to complete the Paralel Dilated Convolution bottleneck module from [3]
+
+
+**Experiment 9: Comparison between Deep Dilated Unet and Unet**
+
+Our Deep Dilated Unet developed :
+
+<img src="Images/Figures/UNET_Deep Dilated Unet.png" alt="Deep Dilated Unet implementation" />
+
+
+Our Deep Dilated Unet model has 3 skip connections, 6 dilated convolutions at the bottleneck which dilation rate is from 1 to 6, increased lineally, and features size 32x32x512 at the bottlenck.
+
+
+We train several models with the dataset and the hyperparmeters found by the Unet : Adam, Learning rate 5e-4, Weight Decay 5e-4, Dropout 0.2, HorizontalFlip. 
+
+
+- Deep Dilated Unet
+    - ![#f03c15](https://via.placeholder.com/15/CDCDCD/000000?text=+) Train
+    - ![#f03c15](https://via.placeholder.com/15/ff8000/000000?text=+) Validation 
+- Unet
+    - ![#f03c15](https://via.placeholder.com/15/ff8000/000000?text=+) Train
+    - ![#f03c15](https://via.placeholder.com/15/3B83BD/000000?text=+) Validation 
+
+
+<img src="Images/Figures/Deep Dilated Unet_Loss.png" alt="Loss" /><img src="Images/Figures/Deep Dilated Unet_mIoU.png" alt="mIou" /><img src="Images/Figures/Deep Dilated Unet_mAcc.png" alt="mAcc" />
+
+
+    
+The results shown there is still overfitting. But we got a quite significally increase of the Intersection Over Union (mIoU) and Pixel Accuracy (mAcc).
+
+
+|                | Deep Dilated Unet   | Unet    |
+|----------------|---------------------|---------|
+| Best epoch     | 220                 | 414     |
+| Mean IOU       | 45.70%              | 43.56%  |
+| Mean Pixel Acc | 71.40%              | 69.69%  |
+
+
+# Pretrained model : DeeplabV3-RESNET101
+
+**Experiment 10: Comparison between Optimizers**
 In the following experiment we are going to compare the results using a pretrained Network, using two different optimizers.
 
   - ADAM LR 1e-3 WD 1e-4
@@ -533,3 +645,6 @@ At the end of all of the project, all of the experiments and the qualitative res
 
 [2]: Olaf Ronneberger, Philipp Fischer, Thomas Brox. "U-Net: Convolutional Networks for Biomedical Image Segmentation". CVPR, 2015. https://arxiv.org/abs/1505.04597
 
+[3]: Accuracy Improvement of UNet Based on Dilated Convolution. https://iopscience.iop.org/article/10.1088/1742-6596/1345/5/052066
+
+[4]: Bitcoin Insider: Smart Audit.Using AI in International Trade. https://www.bitcoininsider.org/article/48604/smart-audit-using-ai-international-trade

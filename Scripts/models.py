@@ -67,3 +67,105 @@ class Unet(nn.Module):
         concat1 = torch.cat((self.upconv1(dec2),enc1),dim=1)
         dec1 = self.dropout1(self.decoder1(concat1))
         return self.conv(dec1)
+
+
+        
+class ParallelDilatedConvolutionModule(nn.Module):
+    def __init__(self, num_imp_channels, num_out_fmaps, kernel_conv=3):
+        super().__init__()
+
+        self.conv0 = nn.Conv2d(num_imp_channels, num_out_fmaps, kernel_conv, padding=1)
+        self.norm0 = nn.BatchNorm2d(num_out_fmaps)
+        self.relu0 = nn.ReLU()
+
+        self.conv1 = nn.Conv2d(num_out_fmaps, num_out_fmaps, kernel_conv, padding=1, dilation=1 )
+        self.norm1 = nn.BatchNorm2d(num_out_fmaps)
+        self.relu1 = nn.ReLU()
+
+        self.conv2 = nn.Conv2d(num_out_fmaps, num_out_fmaps, kernel_conv, padding=2, dilation=2 )
+        self.norm2 = nn.BatchNorm2d(num_out_fmaps)
+        self.relu2 = nn.ReLU()
+
+        self.conv3 = nn.Conv2d(num_out_fmaps, num_out_fmaps, kernel_conv, padding=3, dilation=3 )
+        self.norm3 = nn.BatchNorm2d(num_out_fmaps)
+        self.relu3 = nn.ReLU()
+
+        self.conv4 = nn.Conv2d(num_out_fmaps, num_out_fmaps, kernel_conv, padding=4, dilation=4 )        
+        self.norm4 = nn.BatchNorm2d(num_out_fmaps)
+        self.relu4 = nn.ReLU()
+		
+        self.conv5 = nn.Conv2d(num_out_fmaps, num_out_fmaps, kernel_conv, padding=5, dilation=5 )        
+        self.norm5 = nn.BatchNorm2d(num_out_fmaps)
+        self.relu5 = nn.ReLU()
+
+        self.conv6 = nn.Conv2d(num_out_fmaps, num_out_fmaps, kernel_conv, padding=6, dilation=6 )        
+        self.norm6 = nn.BatchNorm2d(num_out_fmaps)
+        self.relu6 = nn.ReLU()
+
+    def forward(self, x): 
+
+        x = self.relu0(self.norm0(self.conv0(x)))
+        dilated1 = self.relu1(self.norm1(self.conv1(x))) 
+        dilated2 = self.relu2(self.norm2(self.conv2(dilated1)))
+        dilated3 = self.relu3(self.norm3(self.conv3(dilated2)))
+        dilated4 = self.relu4(self.norm4(self.conv4(dilated3)))
+        dilated5 = self.relu5(self.norm5(self.conv5(dilated4)))
+        dilated6 = self.relu6(self.norm6(self.conv6(dilated5)))
+		
+        return (dilated1 + dilated2 + dilated3 + dilated4 + dilated5 + dilated6)
+
+
+#Unet Model with (RGB Image input and 13 predicted classes of output)
+class DeepDilatedUnet(nn.Module):
+    def __init__(self, in_channels=3, out_channels=1, features=32, n_class=13, dropout =0):
+        super().__init__()
+
+        #Encoder
+        self.encoder1 = ConvBlock(3, 64, dropout1 = dropout, dropout2 = dropout)
+        self.pool1 = nn.MaxPool2d(kernel_size=2, stride=2)
+
+        self.encoder2 = ConvBlock(64, 128, dropout1 = dropout, dropout2 = dropout)
+        self.pool2 = nn.MaxPool2d(kernel_size=2, stride=2)
+
+        self.encoder3 = ConvBlock(128, 256, dropout1 = dropout, dropout2 = dropout)
+        self.pool3 = nn.MaxPool2d(kernel_size=2, stride=2)
+
+        #NeckBottle
+        self.neck1 = ParallelDilatedConvolutionModule(256, 512, 3)
+
+        #Decoder
+        self.upconv3 = nn.ConvTranspose2d(512, 256, kernel_size=2, stride=2)
+        self.decoder3 = ConvBlock(256*2, 256, dropout1 = dropout, dropout2 = dropout)
+        self.upconv2 = nn.ConvTranspose2d(256, 128, kernel_size=2, stride=2)
+       	self.decoder2 = ConvBlock(128*2, 128, dropout1 = dropout, dropout2 = dropout)
+        self.upconv1 = nn.ConvTranspose2d(128, 64, kernel_size=2, stride=2)
+        self.decoder1 = ConvBlock(64*2, 64)
+        self.drop1 = nn.Dropout(dropout)
+        self.conv = nn.Conv2d(64, n_class, 1)
+
+    def forward(self, x):
+        down1 = self.encoder1(x)
+        down1pool = self.pool1(down1)
+        down2 = self.encoder2(down1pool)
+        down2pool = self.pool2(down2)
+        down3 = self.encoder3(down2pool)
+        down3pool = self.pool3(down3)
+        neck1 = self.neck1(down3pool)
+
+        upc3 = self.upconv3(neck1)
+        concat3 = torch.cat((down3, upc3),dim=1)
+        up3 = self.decoder3(concat3)
+
+        upc2 = self.upconv2(up3)
+        concat2 = torch.cat((down2, upc2),dim=1)
+        up2 = self.decoder2(concat2)
+
+        upc1 = self.upconv1(up2)
+        concat1 = torch.cat((down1, upc1),dim=1)
+        up1 = self.drop1(self.decoder1(concat1))
+
+        x = self.conv(up1)
+
+        return x
+
+
