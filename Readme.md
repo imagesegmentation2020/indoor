@@ -7,11 +7,13 @@ The repository has the following structure:
       - transformations: classes and methods to be available the images and labels to be transformed
       - models: U-net model
       - utils: Other methods for miscellaneous goals, as save the current state of the model, select the colors to show labels.
-  - Images: Zip file with all images and labels.
+  - Folder Experiments: Contains the model and checkpoints for each model evaluated on every experiment.
+  - Folder Images: Zip file with all images and labels.
   - Model training: Google Colab to train the network.
   - Model testing: Google colab to load the model and test them.
   - Weights calculation: Google Colab to calculate the weights for the CrossEntropy weighted loss.
   - Tensorboard Unet Experiments: Google Colab to read results of previous executions.
+  - Tensorboard Deeplab Experiments: Google Colab to read results of previous executions, when using Depplab Model
   - Data preprocessing: Google colab to read the dataset and generate images and labels for training, test and validation.
   - Model Deeplabv3-Resnet101: Training code adapt to use a pretrained model.
 
@@ -472,6 +474,31 @@ For this reason it is reasonable that we can do a kind of data augmentation doin
 
 As we expected, the results on validation are better using Horizontal Flip and also the loss and the metrics are stabilized.
 
+**Experiment 8: DeeplabV3-RESNET101**
+
+In the following experiment we are going to compare the results using a pretrained Network, using two different optimizers.
+
+  - ADAM LR 1e-3 WD 1e-4
+    - ![#f03c15](https://via.placeholder.com/15/B22222/000000?text=+) Train
+    - ![#f03c15](https://via.placeholder.com/15/00AAE4/000000?text=+) Validation 
+  - SGD LR 1e-3 WD 1e-4 
+    - ![#f03c15](https://via.placeholder.com/15/ff8000/000000?text=+) Train
+    - ![#f03c15](https://via.placeholder.com/15/0E76A8/000000?text=+) Validation 
+
+We expect increase results because the network was pretrained with a huge Dataset.
+
+![picture](https://drive.google.com/uc?export=view&id=1AkOvKsZCeaGl0PQ5DRSvBv8OVz4Ds79Y)![picture](https://drive.google.com/uc?export=view&id=1BMPlw37ynC0Ey0PVXEEyTpDxT3Bvm1bn)![picture](https://drive.google.com/uc?export=view&id=1nwIy1BTkpfrn7YtB509t_QbjN6j_UowA)
+
+|                | ADAM   | SGD    |
+|----------------|--------|--------|
+| Best epoch     | 193    | 195    |
+| Mean IOU       | 45.94% | 56.44% |
+| Mean Pixel Acc | 72.74% | 80.83% |
+
+As we expected, the results on validation are better using a model pretrained with a huge dataset than a small dataset.
+
+Surprisingly for ours, SGD configuration has significantly better results than ADAM.
+
 # Conclusions
 
 After select the best model as the best mean intersection over union of all experiments, we can see the following results in testing:
@@ -505,62 +532,4 @@ At the end of all of the project, all of the experiments and the qualitative res
 [1]: NYU depth V2 dataset. https://cs.nyu.edu/~silberman/datasets/nyu_depth_v2.html
 
 [2]: Olaf Ronneberger, Philipp Fischer, Thomas Brox. "U-Net: Convolutional Networks for Biomedical Image Segmentation". CVPR, 2015. https://arxiv.org/abs/1505.04597
-
-[3]: Mapping to 40/13 class configuration. https://cs.nyu.edu/~deigen/dnl/
-
-[4]: SceneNetv1.0. https://github.com/ankurhanda/SceneNetv1.0/
-
-[5]: Train-test splits. https://cs.nyu.edu/~silberman/projects/indoor_scene_seg_sup.html 
-
-[6]: scikit-image. https://scikit-image.org/docs/dev/api/skimage.io.html
-
-[7]: Semantic segmentation reference training scripts. https://github.com/pytorch/vision/tree/master/references/segmentation
-
-[8]: Train Imagenet, AverageMeter. https://github.com/pytorch/examples/tree/master/imagenet
-
-[9] Implement the U-Net network from scratch. https://arxiv.org/pdf/1505.04597.pdf
-
-[10] Intersection Over Union. https://scikit-learn.org/stable/modules/generated/sklearn.metrics.jaccard_score.html
-
-[11] Dice Loss. https://kornia.readthedocs.io/en/latest/losses.html#kornia.losses.dice_loss
-
-[12] Image augmentation in machine learning experiments. https://imgaug.readthedocs.io/en/latest/
-
-[13] Class-Balanced Loss Based on Effective Number of Samples. https://arxiv.org/pdf/1901.05555.pdf
-
-[14] Semantic segmentation. https://neptune.ai/blog/image-segmentation-in-2020
-
-[15] Unet. https://neurohive.io/en/popular-networks/u-net/
-
-[16] Unet. https://arxiv.org/pdf/1505.04597.pdf
-
-[17] Unet. https://github.com/jakeret/tf_unet/blob/master/tf_unet/unet.py
-
-[18] Deeplab, Deeplab V3 Network. https://sthalles.github.io/deep_segmentation_network/
-
-[19] Deeplab, Deeplab V3 Network. https://github.com/sthalles/deeplab_v3
-
-[20] Deeplab, Deeplab V3 Network. https://towardsdatascience.com/review-deeplabv3-atrous-convolution-semantic-segmentation-6d818bfd1d74
-
-[21] Mask_RCNN Network. https://github.com/matterport/Mask_RCNN
-
-[22] Mask_RCNN Network. https://www.analyticsvidhya.com/blog/2019/07/computer-vision-implementing-mask-r-cnn-image-segmentation/
-
-[23] Comparision between arquitectures. https://devblogs.microsoft.com/cse/2018/07/05/satellite-images-segmentation-sustainable-farming/
-
-[24] Comparision between arquitectures. https://www.quora.com/Is-DeepLab-v3-better-than-Mask-R-CNN
-
-[25] Dataset search by google. https://datasetsearch.research.google.com/
-
-[26] Intersection-over-union and pixel accuracy. https://www.jeremyjordan.me/evaluating-image-segmentation-models/
-
-[27] Intersection-over-union and pixel accuracy. https://towardsdatascience.com/metrics-to-evaluate-your-semantic-segmentation-model-6bcb99639aa2
-
-[28] U-Net and pixel accuracy results in class imbalance. https://towardsdatascience.com/image-segmentation-kaggle-experience-9a41cb8924f0
-
-[29] Accuracy Improvement of UNet Based on Dilated Convolution. https://iopscience.iop.org/article/10.1088/1742-6596/1345/5/052066
-
-
-
-
 
