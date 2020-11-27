@@ -121,13 +121,13 @@ class DeepDilatedUnet(nn.Module):
         super().__init__()
 
         #Encoder
-        self.encoder1 = ConvBlock(3, 64, dropout1 = dropout, dropout2 = dropout)
+        self.encoder1 = ConvBlock(3, 64)
         self.pool1 = nn.MaxPool2d(kernel_size=2, stride=2)
 
-        self.encoder2 = ConvBlock(64, 128, dropout1 = dropout, dropout2 = dropout)
+        self.encoder2 = ConvBlock(64, 128)
         self.pool2 = nn.MaxPool2d(kernel_size=2, stride=2)
 
-        self.encoder3 = ConvBlock(128, 256, dropout1 = dropout, dropout2 = dropout)
+        self.encoder3 = ConvBlock(128, 256)
         self.pool3 = nn.MaxPool2d(kernel_size=2, stride=2)
 
         #NeckBottle
@@ -135,9 +135,9 @@ class DeepDilatedUnet(nn.Module):
 
         #Decoder
         self.upconv3 = nn.ConvTranspose2d(512, 256, kernel_size=2, stride=2)
-        self.decoder3 = ConvBlock(256*2, 256, dropout1 = dropout, dropout2 = dropout)
+        self.decoder3 = ConvBlock(256*2, 256)
         self.upconv2 = nn.ConvTranspose2d(256, 128, kernel_size=2, stride=2)
-       	self.decoder2 = ConvBlock(128*2, 128, dropout1 = dropout, dropout2 = dropout)
+       	self.decoder2 = ConvBlock(128*2, 128)
         self.upconv1 = nn.ConvTranspose2d(128, 64, kernel_size=2, stride=2)
         self.decoder1 = ConvBlock(64*2, 64)
         self.drop1 = nn.Dropout(dropout)

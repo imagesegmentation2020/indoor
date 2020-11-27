@@ -480,25 +480,28 @@ As we expected, the results on validation are better using Horizontal Flip and a
 
 # Reducing complexity of the model
 
-After analyse the results of the experiments, several hypotesis are presented to improve the model, reduce overfitting, and maximize Intersection over Union (Iou) and Pixel Accuracy(Acc).
+After analyse the results of the experiments, several hypothesis are presented to improve the model, reduce overfitting, and maximize Intersection over Union (Iou) and Pixel Accuracy(Acc).
 
 We conclude: 
 
   - Reduce the number of features could improve the overfitting.
   - A bigger size in bottleneck features could improve the metric results.
-  
-Our reserach was fructiferous and we obtain a paper Accuracy Improvement of UNet Based on Dilated Convolution from Shengyuan Piao and Jiaming Liu, from the University of Beijing, published at November, 2019. [3]
 
-We show here the modificated Unet model proposed : Deep Dilated Unet with a Paralel Dilated Convolution bottleneck module.
+
+## Deep Dilated Unet
+
+Our research was fructiferous and we obtain a paper Accuracy Improvement of UNet Based on Dilated Convolution from Shengyuan Piao and Jiaming Liu, from the University of Beijing, published at November, 2019. [3]
+
+We show here the modificated Unet model proposed : Deep Dilated Unet with a Parallel Dilated Convolution bottleneck module.
  
 <img src="Images/Figures/Paralel Dilated Convolutions.png" alt="Paralel Dilated Convolutions" />
 <img src="Images/Figures/Deep Dilated Unet.png" alt="Deep Dilated Unet" />
 
-As seen in this model, the number of shortcuts are reduced to 3. The module proposed as bottleneck consists in a 7 ditled convolutions.
+As seen in this model, the number of skipconnections are reduced to 3. The module proposed as bottleneck consists in a 7 dilated convolutions.
 Each one of them works with features from size 32x32x512. This is 512 features with mapping size of 32x32. The dilations rate increases quadratically, from 1 to 32.
 
-To adapt this proposed Deep Dilated Unet, to our already implemented Unet working with our dataset, in addition qith the quadratic rate convolutions,
-we approach several prototypes. The problem we found is a trade off among skipconnections number, the number of convolutions in the bottleneck, and the number of channels and size of the features at the bottleneck. We start from RGB images at dataset from size 256x256x3. 
+To adapt this proposed Deep Dilated Unet, to our already implemented Unet working with our dataset, in addition with the quadratic rate convolutions,
+we approach several prototypes. The problem we found is a trade off among skipconnections number, the number of convolutions in the bottleneck, and the number of channels and size of the features at the bottleneck. We start from RGB images at dataset from size 256x256x3.
 
 
 **Experiment 8: Comparison between Deep Dilated Prototypes and Unet**
@@ -533,22 +536,21 @@ We train several models with the dataset and the hyperparmeters found by the Une
 
 <img src="Images/Figures/Prototype1-2_Loss.png" alt="Loss" /><img src="Images/Figures/Prototype1-2_mIoU.png" alt="mIou" /><img src="Images/Figures/Prototype1-2_mAcc.png" alt="mAcc" />
 
-We got surprising results:  Prototype 1 (Deep Dilated Unet 1-16), with 3 skip connections, got better results than Prototype 2 (Deep Dilated Unet 1-8) with the four skip cpnnections as our Unet model. But Unet model still has much more better results then the presented prototypes.
+We got surprising results:  Prototype 1 (Deep Dilated Unet 1-16), with 3 skip connections, got better results than Prototype 2 (Deep Dilated Unet 1-8) with the four skip connections as our Unet model. But Unet model still has much more better results then the presented prototypes.
 
-We concluded that we should improve prototype 1 (Deep Dilated Unet 1-16), because 3 skip connections is best than 4. But the clue is to have, for one side features with mapping space 32x32 with 512 channels at the bottlenck, at in the other side complete the 7 dilated convolution structure somehow.
+We concluded that we should improve prototype 1 (Deep Dilated Unet 1-16), because 3 skip connections is best than 4. But the clue is to have, for one side features with mapping space 32x32 with 512 channels at the bottleneck, at in the other side complete the 7 dilated convolution structure somehow.
 
 Our research was fructiferous and we obtain a document with the final solution.
-At the webpage Bitcoin Insider: Smart Audit: Using AI in International Trade. [4] we found the model prototype that inspired us to our final solution.
+At the webpage Bitcoin Insider: Smart Audit: Using AI in International Trade. [4] we found the model prototype that inspired us to our final solution. 
 
 <img src="Images/Figures/Dilation rate UNet.png" alt="Deep Dilated Unet at Bitcoin Insider" />
 
-This model has 3 skip connections, 6 dilated convolutions at the bottleneck which dilation rate is from 1 to 6, increased lineally, and features size 32x32x512 at the bottlenck.
+This model has 3 skip connections, 6 dilated convolutions at the bottleneck which dilation rate is from 1 to 6, increased lineally, and features size 32x32x512 at the bottleneck.
 
 The solution comes from two important changes
 
-  - At the first convolution of the Unet, instead to produce fature maps of 32 channels, it produces feature maps of 64 channels. This results in features size 32x32x512 at the bottlenceck 
-  - Dilations rate increases lineally instead of quadratically. This give us the possibility to complete the Paralel Dilated Convolution bottleneck module from [3]
-
+  - At the first convolution of the Unet, instead to produce feature maps of 32 channels, it produces feature maps of 64 channels. This results in features size 32x32x512 at the bottleneck 
+  - Dilations rate increases lineally instead of quadratically. This give us the possibility to complete the Parallel Dilated Convolution bottleneck module from [3]
 
 **Experiment 9: Comparison between Deep Dilated Unet and Unet**
 
@@ -585,9 +587,128 @@ The results shown there is still overfitting. But we got a quite significally in
 | Mean Pixel Acc | 71.40%              | 69.69%  |
 
 
+## Attention Unet
+
+After analyse the results of the experiments, several hypothesis are presented to improve the model, reduce overfitting, and maximize Intersection over Union (Iou) and Pixel Accuracy(Acc).
+
+We conclude: 
+
+  - Reduce the feature's size could improve the overfitting.
+  - An attention mechanism in the Unet could improve the metric results.
+
+
+To implement the reduction size of features, we are gonna construct an array filters like this :
+
+        filters = [32, 64, 128, 256, 512]
+        filters = [int(x / feature_scale) for x in filters]
+
+The parameter feature_scale will affect the size of the filters. Passed to the model, it will build one with reduced size in features model.        
+        
+We encounter, that 
+  - For our classic Unet model, the overfitting is significantly reduced with feature_scale = 4.
+  - For the Deep Dilated Unet model, the overfitting is significantly reduced with feature_scale = 8.
+
+
+Our research was fructiferous and we obtain a paper Attention U-Net: Learning Where to Look for the Pancreas from Ozan Oktay and others. [5]
+
+We show here the modificated Unet model proposed : Attention U-Net with attention gate (AG) unit. [5]
+
+
+<img src="Images/Figures/Attention U-Net.png" alt="Attention U-Net model" />
+<img src="Images/Figures/attention gate (AG).png" alt="Attention Gate (AG) unit" />
+
+The implementation is adapted from the code Attention Gated Networks (Image Classification & Segmentation) [6]. We reuse and adapt some python code modules.
+
+
+**Experiment 10: Comparison between Unet, Attention Unet and Deep Dilated Unet**
+
+In the following experiment we are going to compare the results using feature_scale, attention at skipconnections and dilated convolutions at bottleneck.
+
+We train several models with the dataset and the hyperparmeters found by the Unet : Adam, Learning rate 5e-4, Weight Decay 5e-4, Dropout 0.2, HorizontalFlip.
+
+- Unet. feature_scale = 4
+    - ![#f03c15](https://via.placeholder.com/15/ff8000/000000?text=+) Train
+    - ![#f03c15](https://via.placeholder.com/15/3B83BD/000000?text=+) Validation
+
+- Attention Unet. feature_scale = 4
+    - ![#f03c15](https://via.placeholder.com/15/C2185B/000000?text=+) Train
+    - ![#f03c15](https://via.placeholder.com/15/009C8C/000000?text=+) Validation 
+    
+- Deep Dilated Unet. feature_scale = 8
+    - ![#f03c15](https://via.placeholder.com/15/B22222/000000?text=+) Train
+    - ![#f03c15](https://via.placeholder.com/15/00AAE4/000000?text=+) Validation 
+
+
+
+
+<img src="Images/Figures/Attention_Loss.png" alt="Loss" /><img src="Images/Figures/Attention_mIoU.png" alt="mIou" /><img src="Images/Figures/Attention_mAcc.png" alt="mAcc" />
+
+The results shown there is much less overfitting with feature_scale parameter. 
+We got a a better results in overfitting with Attention Unet, since validation loss and training loss are close in more epochs. But instead we observe better performance in Intersection Over Union (mIoU) and Pixel Accuracy (mAcc) metrics with Deep Dilated Unet. We observe a peak in metrics that gives Attention Unet to overpass Deep Dilated Unet at the last epochs in simulations.
+
+
+|                | Unet       | Attention | Deep Dilated |
+|----------------|------------|-----------|--------------|
+| Best epoch     | 248        | 239       | 232          |
+| Mean IOU       | 20.93%     | 22.07%    | 21.38%       |
+| Mean Pixel Acc | 56.96%     | 55.26%    | 57.97%       |
+
+
+
+**Experiment 11: Comparison between Attention Unet and Attention Deep Dilated Unet**
+
+In the following experiment we are going to compare the results using feature_scale, and Attention Unet single model with Attention + Deep Dilated Unet combined model. 
+
+We train several models with the dataset and the hyperparmeters found by the Unet : Adam, Learning rate 5e-4, Weight Decay 5e-4, Dropout 0.2, HorizontalFlip.
+
+  - Attention Unet. feature_scale = 4
+    - ![#f03c15](https://via.placeholder.com/15/C2185B/000000?text=+) Train
+    - ![#f03c15](https://via.placeholder.com/15/009C8C/000000?text=+) Validation 
+
+  - Attention Deep Dilated Unet . feature_scale = 8
+    - ![#f03c15](https://via.placeholder.com/15/CDCDCD/000000?text=+) Train
+    - ![#f03c15](https://via.placeholder.com/15/ff8000/000000?text=+) Validation 
+
+<img src="Images/Figures/Attention_PDUnet_Loss.png" alt="Loss" /><img src="Images/Figures/Attention_PDUnet_mIoU.png" alt="mIou" /><img src="Images/Figures/Attention_PDUnet_mAcc.png" alt="mAcc" />
+
+The results shown there is much less overfitting with feature_scale parameter. 
+We got a better results in overfitting with Attention Unet, since validation loss and training loss are close in more epochs. But instead we observe better performance in Intersection Over Union (mIoU) metric with Attention Deep Dilated Unet combined model. Instead Pixel Accuracy (mAcc) metric has been reduced compared with a  Deep Dilated Unit single model.
+
+
+
+**Experiment 12: Comparison between Deep Dilated Unet and Attention Deep Dilated Unet at original scale**
+
+In the following experiment we are going to compare the results using feature_scale=1 ; this means at the original scale.
+The models to compare are Deep Dilated Unet single model with Attention + Deep Dilated Unet combined model. 
+
+We train several models with the dataset and the hyperparmeters found by the Unet : Adam, Learning rate 5e-4, Weight Decay 5e-4, Dropout 0.2, HorizontalFlip.
+
+  - Deep Dilated Unet
+    - ![#f03c15](https://via.placeholder.com/15/ff8000/000000?text=+) Train
+    - ![#f03c15](https://via.placeholder.com/15/3B83BD/000000?text=+) Validation 
+
+  - Attention Deep Dilated Unet
+    - ![#f03c15](https://via.placeholder.com/15/00AAE4/000000?text=+) Train
+    - ![#f03c15](https://via.placeholder.com/15/C2185B/000000?text=+) Validation 
+
+<img src="Images/Figures/Attention_Best_Loss.png" alt="Loss" /><img src="Images/Figures/Attention_Best_mIoU.png" alt="mIou" /><img src="Images/Figures/Attention_Best_mAcc.png" alt="mAcc" />
+
+The results shown very similar results with differences:
+There is better response at reducing overfitting with Attention Deep Dilated Unet combined model, since validation loss and training loss are close in more epochs. We observe a faster convergence in loss at training and validation final values.
+We got a similar results at performance in Intersection Over Union (mIoU) and Pixel Accuracy (mAcc) metrics in both models. Pixel Accuracy (mAcc) metric has some improvement in the Attention Deep Dilated Unit combined model.
+
+
+|                | Deep Dilated Unet | Attention Deep Dilated Unet |
+|----------------|-------------------|-----------------------------|
+| Best epoch     | 220               | 212                         |
+| Mean IOU       | 45.70%            | 45.11%                      |
+| Mean Pixel Acc | 71.40%            | 71.76%                      |
+
+
+
 # Pretrained model : DeeplabV3-RESNET101
 
-**Experiment 10: Comparison between Optimizers**
+**Experiment 13: Comparison between Optimizers**
 In the following experiment we are going to compare the results using a pretrained Network, using two different optimizers.
 
   - ADAM LR 1e-3 WD 1e-4
@@ -648,3 +769,7 @@ At the end of all of the project, all of the experiments and the qualitative res
 [3]: Accuracy Improvement of UNet Based on Dilated Convolution. https://iopscience.iop.org/article/10.1088/1742-6596/1345/5/052066
 
 [4]: Bitcoin Insider: Smart Audit.Using AI in International Trade. https://www.bitcoininsider.org/article/48604/smart-audit-using-ai-international-trade
+
+[5]: Attention U-Net: Learning Where to Look for the Pancreas. Ozan Oktay and others. https://arxiv.org/abs/1804.03999
+
+[6]: Attention Gated Networks (Image Classification & Segmentation). https://github.com/ozan-oktay/Attention-Gated-Networks
