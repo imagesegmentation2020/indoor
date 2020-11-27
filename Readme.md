@@ -643,18 +643,17 @@ We train several models with the dataset and the hyperparmeters found by the Une
 
 
 
-
 <img src="Images/Figures/Attention_Loss.png" alt="Loss" /><img src="Images/Figures/Attention_mIoU.png" alt="mIou" /><img src="Images/Figures/Attention_mAcc.png" alt="mAcc" />
 
 The results shown there is much less overfitting with feature_scale parameter. 
 We got a a better results in overfitting with Attention Unet, since validation loss and training loss are close in more epochs. But instead we observe better performance in Intersection Over Union (mIoU) and Pixel Accuracy (mAcc) metrics with Deep Dilated Unet. We observe a peak in metrics that gives Attention Unet to overpass Deep Dilated Unet at the last epochs in simulations.
 
 
-|                | Unet       | Attention | Deep Dilated |
-|----------------|------------|-----------|--------------|
-| Best epoch     | 248        | 239       | 232          |
-| Mean IOU       | 20.93%     | 22.07%    | 21.38%       |
-| Mean Pixel Acc | 56.96%     | 55.26%    | 57.97%       |
+|                | Unet       | Attention Unet | Deep Dilated Unet|
+|----------------|------------|----------------|------------------|
+| Best epoch     | 248        | 239            | 232              |
+| Mean IOU       | 20.93%     | 22.07%         | 21.38%           |
+| Mean Pixel Acc | 56.96%     | 55.26%         | 57.97%           |
 
 
 
@@ -679,6 +678,13 @@ We train several models with the dataset and the hyperparmeters found by the Une
 
 The results shown there is much less overfitting with feature_scale parameter. 
 We got a better results in overfitting with Attention Unet, since validation loss and training loss are close in more epochs. But instead we observe better performance in Intersection Over Union (mIoU) metric with Attention Deep Dilated Unet combined model. Instead Pixel Accuracy (mAcc) metric has been reduced compared with a  Deep Dilated Unit single model.
+
+
+|                | Attention Unet    | Attention Deep Dilated Unet |
+|----------------|-------------------|-----------------------------|
+| Best epoch     | 239               | 242                         |
+| Mean IOU       | 22.07%            | 22.22%                      |
+| Mean Pixel Acc | 55.26%            | 56.09%                      |
 
 
 
