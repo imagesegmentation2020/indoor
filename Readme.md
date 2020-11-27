@@ -627,14 +627,17 @@ In the following experiment we are going to compare the results using feature_sc
 We train several models with the dataset and the hyperparmeters found by the Unet : Adam, Learning rate 5e-4, Weight Decay 5e-4, Dropout 0.2, HorizontalFlip.
 
 - Unet. feature_scale = 4
+
     - ![#f03c15](https://via.placeholder.com/15/ff8000/000000?text=+) Train
     - ![#f03c15](https://via.placeholder.com/15/3B83BD/000000?text=+) Validation
 
 - Attention Unet. feature_scale = 4
+
     - ![#f03c15](https://via.placeholder.com/15/C2185B/000000?text=+) Train
     - ![#f03c15](https://via.placeholder.com/15/009C8C/000000?text=+) Validation 
     
 - Deep Dilated Unet. feature_scale = 8
+
     - ![#f03c15](https://via.placeholder.com/15/B22222/000000?text=+) Train
     - ![#f03c15](https://via.placeholder.com/15/00AAE4/000000?text=+) Validation 
 
@@ -662,12 +665,15 @@ In the following experiment we are going to compare the results using feature_sc
 We train several models with the dataset and the hyperparmeters found by the Unet : Adam, Learning rate 5e-4, Weight Decay 5e-4, Dropout 0.2, HorizontalFlip.
 
   - Attention Unet. feature_scale = 4
+  
     - ![#f03c15](https://via.placeholder.com/15/C2185B/000000?text=+) Train
     - ![#f03c15](https://via.placeholder.com/15/009C8C/000000?text=+) Validation 
 
   - Attention Deep Dilated Unet . feature_scale = 8
+  
     - ![#f03c15](https://via.placeholder.com/15/CDCDCD/000000?text=+) Train
     - ![#f03c15](https://via.placeholder.com/15/ff8000/000000?text=+) Validation 
+
 
 <img src="Images/Figures/Attention_PDUnet_Loss.png" alt="Loss" /><img src="Images/Figures/Attention_PDUnet_mIoU.png" alt="mIou" /><img src="Images/Figures/Attention_PDUnet_mAcc.png" alt="mAcc" />
 
@@ -684,10 +690,12 @@ The models to compare are Deep Dilated Unet single model with Attention + Deep D
 We train several models with the dataset and the hyperparmeters found by the Unet : Adam, Learning rate 5e-4, Weight Decay 5e-4, Dropout 0.2, HorizontalFlip.
 
   - Deep Dilated Unet
+  
     - ![#f03c15](https://via.placeholder.com/15/ff8000/000000?text=+) Train
     - ![#f03c15](https://via.placeholder.com/15/3B83BD/000000?text=+) Validation 
 
   - Attention Deep Dilated Unet
+  
     - ![#f03c15](https://via.placeholder.com/15/00AAE4/000000?text=+) Train
     - ![#f03c15](https://via.placeholder.com/15/C2185B/000000?text=+) Validation 
 
@@ -712,9 +720,12 @@ We got a similar results at performance in Intersection Over Union (mIoU) and Pi
 In the following experiment we are going to compare the results using a pretrained Network, using two different optimizers.
 
   - ADAM LR 1e-3 WD 1e-4
+  
     - ![#f03c15](https://via.placeholder.com/15/B22222/000000?text=+) Train
     - ![#f03c15](https://via.placeholder.com/15/00AAE4/000000?text=+) Validation 
+    
   - SGD LR 1e-3 WD 1e-4 
+  
     - ![#f03c15](https://via.placeholder.com/15/ff8000/000000?text=+) Train
     - ![#f03c15](https://via.placeholder.com/15/0E76A8/000000?text=+) Validation 
 
