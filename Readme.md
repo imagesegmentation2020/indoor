@@ -566,9 +566,12 @@ We train several models with the dataset and the hyperparmeters found by the Une
 
 
 - Deep Dilated Unet
+
     - ![#f03c15](https://via.placeholder.com/15/CDCDCD/000000?text=+) Train
     - ![#f03c15](https://via.placeholder.com/15/ff8000/000000?text=+) Validation 
+
 - Unet
+
     - ![#f03c15](https://via.placeholder.com/15/ff8000/000000?text=+) Train
     - ![#f03c15](https://via.placeholder.com/15/3B83BD/000000?text=+) Validation 
 
